@@ -29,6 +29,8 @@ public abstract class TextUtil {
 	public static String formatar(Object conteudo) {
 		if (conteudo == null)
 			return "";
+		if (conteudo instanceof Boolean)
+			return (Boolean) conteudo ? "Sim" : "Não";
 		if (conteudo instanceof BigDecimal)
 			return ((BigDecimal) conteudo).toPlainString().replace(",", "").replace(".", ",");
 		if (conteudo instanceof Calendar)
