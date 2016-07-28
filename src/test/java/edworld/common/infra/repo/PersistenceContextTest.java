@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import edworld.common.infra.repo.PersistenceManager;
-
 public class PersistenceContextTest {
 	@Test
 	public void nestedTransactions() {

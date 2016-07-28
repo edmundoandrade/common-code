@@ -1,12 +1,10 @@
-package edworld.infopolis.infraestrutura.util;
+package edworld.common.infra.util;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
-
-import edworld.common.infra.util.TextUtil;
 
 public class TextUtilTest {
 	@Test

@@ -1,10 +1,8 @@
-package edworld.infopolis.infraestrutura.util;
+package edworld.common.infra.util;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import edworld.common.infra.util.HTMLUtil;
 
 public class HTMLUtilTest {
 	@Test

@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-import edworld.common.infra.RecursoXML;
-
 public class RecursoXMLTest {
 	@Test
 	public void sanitizeXML() throws Exception {
