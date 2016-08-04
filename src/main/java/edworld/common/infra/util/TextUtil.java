@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import edworld.common.core.Image;
 import edworld.common.core.Link;
 
 public abstract class TextUtil {
@@ -39,6 +40,8 @@ public abstract class TextUtil {
 			return formatar(pack((String[]) conteudo, "", " | ", ""));
 		if (conteudo instanceof Link)
 			return ((Link) conteudo).toHTML();
+		if (conteudo instanceof Image)
+			return ((Image) conteudo).toHTML();
 		return conteudo.toString().trim();
 	}
 
