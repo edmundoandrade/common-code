@@ -43,7 +43,7 @@ public abstract class AbstractRepositorioPersistente {
 
 	protected SQLQuery createQuery(String resourceName, Criterio<?> criterio, Integer limite, String... orderBy) {
 		return persistenceContext.getHibernateSession()
-				.createSQLQuery(getSqlResource(resourceName, criterio, limite, orderBy));
+				.createSQLQuery(getSqlResource(resourceName, (CriterioSQL) criterio, limite, orderBy));
 	}
 
 	protected int executeSQL(final String sql, final Object... params) {
@@ -122,10 +122,10 @@ public abstract class AbstractRepositorioPersistente {
 			statement.setString(index, (String) value);
 	}
 
-	protected String getSqlResource(String resourceName, Criterio<?> criterio, Integer limite, String... orderBy) {
+	protected String getSqlResource(String resourceName, CriterioSQL criterio, Integer limite, String... orderBy) {
 		String sql = sqlFromResource(resourceName);
 		if (criterio != null) {
-			String restricao = ((CriterioSQL) criterio).toSQL();
+			String restricao = criterio.toSQL();
 			if (!restricao.isEmpty())
 				sql = sql.replaceAll("--(WHERE|AND)", "$1 " + Matcher.quoteReplacement(restricao));
 		}

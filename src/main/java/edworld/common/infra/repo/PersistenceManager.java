@@ -30,6 +30,30 @@ public class PersistenceManager {
 		return pendingTransactions;
 	}
 
+	public void transactionContext(Runnable work) {
+		beginTransaction();
+		try {
+			work.run();
+		} catch (Throwable e) {
+			rollbackTransaction();
+			throw e;
+		}
+		commitTransaction();
+	}
+
+	public <V> V transactionContext(Callable<V> work) {
+		V result;
+		beginTransaction();
+		try {
+			result = work.call();
+		} catch (Exception e) {
+			rollbackTransaction();
+			throw new IllegalArgumentException(e);
+		}
+		commitTransaction();
+		return result;
+	}
+
 	protected void beginTransaction() {
 		pendingTransactions++;
 		if (pendingTransactions != 1)
@@ -52,29 +76,5 @@ public class PersistenceManager {
 			return;
 		if (entityManager != null && !transactionManagedByContainer)
 			entityManager.getTransaction().commit();
-	}
-
-	protected void transactionContext(Runnable work) {
-		beginTransaction();
-		try {
-			work.run();
-		} catch (Throwable e) {
-			rollbackTransaction();
-			throw e;
-		}
-		commitTransaction();
-	}
-
-	protected <V> V transactionContext(Callable<V> work) {
-		V result;
-		beginTransaction();
-		try {
-			result = work.call();
-		} catch (Exception e) {
-			rollbackTransaction();
-			throw new IllegalArgumentException(e);
-		}
-		commitTransaction();
-		return result;
 	}
 }
