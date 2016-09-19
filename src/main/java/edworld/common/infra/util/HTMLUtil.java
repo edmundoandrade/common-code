@@ -42,10 +42,6 @@ public class HTMLUtil {
 		}
 	}
 
-	public static String textHTML(String html) {
-		return textHTML(html, Pattern.compile("(?is)<[^>]*>([^<]*)</[^>]*>")).trim();
-	}
-
 	public static List<String> extractTrechosHTML(String html, Pattern regex) {
 		return extractTrechosHTML(html, regex, 0);
 	}
@@ -58,15 +54,20 @@ public class HTMLUtil {
 		return trechos;
 	}
 
+	public static String textHTML(String html) {
+		return textHTML(html, Pattern.compile("(?is)<[^/>]*>([^<]*)</[^>]*>"));
+	}
+
 	public static String textHTML(String html, Pattern regex) {
-		String text = "";
+		StringBuffer sb = new StringBuffer();
 		Matcher matcher = regex.matcher(html);
 		while (matcher.find())
-			if (regex.matcher(matcher.group(1)).find())
-				text += textHTML(matcher.group(1), regex);
-			else
-				text += unescapeHtml4(matcher.group(1));
-		return text;
+			matcher.appendReplacement(sb, textHTML(matcher.group(1), regex));
+		matcher.appendTail(sb);
+		String result = sb.toString();
+		if (regex.matcher(result).find())
+			return textHTML(result, regex);
+		return unescapeHtml4(result).trim();
 	}
 
 	public static void openHTML(String pageTemplate, PrintStream out, String title, String... navigation) {
