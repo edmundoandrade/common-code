@@ -55,7 +55,7 @@ public class HTMLUtil {
 	}
 
 	public static String textHTML(String html) {
-		return textHTML(html, Pattern.compile("(?is)<[^/>]*>([^<]*)</[^>]*>"));
+		return textHTML(html, Pattern.compile("(?is)<[^/>]*>([^<]*)</[^>]*>")).trim();
 	}
 
 	public static String textHTML(String html, Pattern regex) {
@@ -67,7 +67,7 @@ public class HTMLUtil {
 		String result = sb.toString();
 		if (regex.matcher(result).find())
 			return textHTML(result, regex);
-		return unescapeHtml4(result).trim();
+		return unescapeHTML(result);
 	}
 
 	public static void openHTML(String pageTemplate, PrintStream out, String title, String... navigation) {
@@ -98,7 +98,7 @@ public class HTMLUtil {
 	}
 
 	public static String unescapeHTML(String html) {
-		return unescapeHtml4(html);
+		return unescapeHtml4(html).replaceAll("\\p{Z}", " ");
 	}
 
 	public static String composeLink(String texto, URI uri) {

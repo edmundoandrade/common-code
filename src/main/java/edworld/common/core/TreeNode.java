@@ -1,9 +1,23 @@
 package edworld.common.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class TreeNode<T> {
+	public static <N extends TreeNodeKeys> TreeNode<N> createFromKeys(String rootKey, Collection<N> keysCollection) {
+		TreeNode<N> root = new TreeNode<>(rootKey, null);
+		for (N item : keysCollection) {
+			TreeNode<N> lastNode = root;
+			for (int i = 0; i < item.getKeys().length; i++)
+				if (i == item.getKeys().length - 1)
+					lastNode.putChild(new TreeNode<>(item.getKeys()[i], item));
+				else
+					lastNode = lastNode.putChild(new TreeNode<N>(item.getKeys()[i], null));
+		}
+		return root;
+	}
+
 	private String key;
 	private T item;
 	private List<TreeNode<T>> children = new ArrayList<>();
