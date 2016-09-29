@@ -23,11 +23,11 @@ public class HTMLUtil {
 	}
 
 	public static List<String> extractTablesHTML(String html) {
-		return extractTrechosHTML(html, Pattern.compile("(?is)<table[^>]*>.*?</table>"));
+		return extractTrechosHTML(html, Pattern.compile("(?is)<table[^>]*>.*?</table>"), 0, "<table");
 	}
 
 	public static List<String> extractTableRowsHTML(String table) {
-		return extractTrechosHTML(table, Pattern.compile("(?is)<tr[^>]*>.*?</tr>"));
+		return extractTrechosHTML(table, Pattern.compile("(?is)<tr[^>]*>.*?</tr>"), 0, "<tr");
 	}
 
 	public static List<String> extractTableCellsHTML(String tableRow) {
@@ -47,10 +47,19 @@ public class HTMLUtil {
 	}
 
 	public static List<String> extractTrechosHTML(String html, Pattern regex, int groupIndex) {
+		return extractTrechosHTML(html, regex, groupIndex, null);
+	}
+
+	public static List<String> extractTrechosHTML(String html, Pattern regex, int groupIndex,
+			String fromLastOcurrence) {
 		List<String> trechos = new ArrayList<String>();
 		Matcher matcher = regex.matcher(html);
-		while (matcher.find())
-			trechos.add(matcher.group(groupIndex));
+		while (matcher.find()) {
+			String item = matcher.group(groupIndex);
+			if (fromLastOcurrence != null)
+				item = item.substring(item.lastIndexOf(fromLastOcurrence));
+			trechos.add(item);
+		}
 		return trechos;
 	}
 
