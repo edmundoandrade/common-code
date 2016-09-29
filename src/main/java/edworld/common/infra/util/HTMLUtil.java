@@ -22,6 +22,15 @@ public class HTMLUtil {
 		return extractTrechosHTML(html, Pattern.compile("(?is)<a href=\"([^\"]*)\"[^>]*>.*?</a>"));
 	}
 
+	public static List<String> extractHeadingsHTML(String html) {
+		return extractHeadingsHTML(html, null);
+	}
+
+	public static List<String> extractHeadingsHTML(String html, Integer level) {
+		String levelRule = level == null ? "\\d+" : level.toString();
+		return extractTrechosHTML(html, Pattern.compile("(?is)<h" + levelRule + "[^>]*>(.*?)</h" + levelRule + ">"));
+	}
+
 	public static List<String> extractTablesHTML(String html) {
 		return extractTrechosHTML(html, Pattern.compile("(?is)<table[^>]*>.*?</table>"), 0, "<table");
 	}
