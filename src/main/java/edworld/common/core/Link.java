@@ -1,5 +1,7 @@
 package edworld.common.core;
 
+import static edworld.common.infra.util.HTMLUtil.escapeHTML;
+
 public class Link {
 	private String texto;
 	private String href;
@@ -18,6 +20,6 @@ public class Link {
 	}
 
 	public String toHTML() {
-		return "<a href=\"" + getHref() + "\">" + getTexto() + "</a>";
+		return "<a href=\"" + escapeHTML(getHref()) + "\">" + escapeHTML(getTexto()) + "</a>";
 	}
 }
