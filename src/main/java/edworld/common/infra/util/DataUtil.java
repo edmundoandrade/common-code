@@ -16,6 +16,7 @@ public abstract class DataUtil {
 	public static final DateFormat FORMATO_HORA = new SimpleDateFormat("HH:mm");
 	public static final DateFormat FORMATO_TIMESTAMP = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
 	public static final DateFormat FORMATO_DATA_ANIVERSARIO = new SimpleDateFormat("dd/MM");
+	public static final DateFormat FORMATO_DATA_PERIODO = new SimpleDateFormat("dd/MMMMM/yyyy");
 
 	public static Calendar data(int dia, int mes, int ano) {
 		return new GregorianCalendar(ano, mes - 1, dia);
@@ -154,25 +155,33 @@ public abstract class DataUtil {
 	}
 
 	public static Calendar parseDataInicioPeriodo(String periodo) {
+		return parseDataInicioPeriodo(periodo, FORMATO_DATA_PERIODO);
+	}
+
+	public static Calendar parseDataInicioPeriodo(String periodo, DateFormat formato) {
 		String inicio = extractDataInicioPeriodo(periodo);
 		String fim = extractDataFimPeriodo(periodo);
 		int qtdPartesDataInicio = inicio.split("/").length;
 		for (int i = 0; i < qtdPartesDataInicio; i++)
 			fim = fim.replaceFirst(".*?/", "");
-		return DataUtil.parseDataHora(inicio + "/" + fim, new SimpleDateFormat("dd/MMMMM/yyyy"));
+		return DataUtil.parseDataHora(inicio + "/" + fim, formato);
 	}
 
 	public static Calendar parseDataFimPeriodo(String periodo) {
-		return DataUtil.parseDataHora(extractDataFimPeriodo(periodo), new SimpleDateFormat("dd/MMMMM/yyyy"));
+		return parseDataFimPeriodo(periodo, FORMATO_DATA_PERIODO);
+	}
+
+	public static Calendar parseDataFimPeriodo(String periodo, DateFormat formato) {
+		return DataUtil.parseDataHora(extractDataFimPeriodo(periodo), formato);
 	}
 
 	private static String extractDataInicioPeriodo(String periodo) {
-		return periodo.trim().toLowerCase().replaceAll("\\s+a\\s+.*", "").replace("º", "").replaceAll("\\s+de\\s+",
-				"/");
+		return periodo.trim().toLowerCase().replaceAll("\\s+(a|até)\\s+.*", "").replace("º", "")
+				.replaceAll("\\s+de\\s+", "/");
 	}
 
 	private static String extractDataFimPeriodo(String periodo) {
-		return periodo.trim().toLowerCase().replaceAll(".*\\s+a\\s+", "").replace("º", "").replaceAll("\\s+de\\s+", "/")
-				.replaceAll("\\s+", "/");
+		return periodo.trim().toLowerCase().replaceAll(".*\\s+(a|até)\\s+", "").replace("º", "")
+				.replaceAll("\\s+de\\s+", "/").replaceAll("\\s+", "/");
 	}
 }
