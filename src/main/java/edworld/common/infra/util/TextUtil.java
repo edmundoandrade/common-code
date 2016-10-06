@@ -2,7 +2,9 @@ package edworld.common.infra.util;
 
 import java.math.BigDecimal;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -83,5 +85,25 @@ public abstract class TextUtil {
 
 	public static String[] toLines(String text) {
 		return text.split("\r\n?|\n");
+	}
+
+	public static String[] wordWrap(String text, int lineLength) {
+		return wordWrap(text, lineLength, lineLength);
+	}
+
+	public static String[] wordWrap(String text, int lineLength, int firstLineLength) {
+		List<String> list = new ArrayList<>();
+		String remainingText = text.trim();
+		int length = firstLineLength;
+		while (remainingText.length() > length) {
+			int pos = remainingText.substring(0, length).lastIndexOf(' ');
+			if (pos < 0)
+				pos = length;
+			list.add(remainingText.substring(0, pos).trim());
+			remainingText = remainingText.substring(pos).trim();
+			length = lineLength;
+		}
+		list.add(remainingText);
+		return list.toArray(new String[list.size()]);
 	}
 }

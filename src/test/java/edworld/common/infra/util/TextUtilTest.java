@@ -30,4 +30,10 @@ public class TextUtilTest {
 	public void unpack() {
 		assertArrayEquals(ArrayUtils.toArray("x1", "y2", "z3"), TextUtil.unpack("|x1|y2|z3|"));
 	}
+
+	@Test
+	public void wordWrap() {
+		assertEquals("g", TextUtil.wordWrap("abcdefg", 3)[2]);
+		assertEquals("fg", TextUtil.wordWrap("abcdefg", 2, 3)[2]);
+	}
 }
