@@ -25,7 +25,7 @@ public abstract class TextUtil {
 	}
 
 	public static String fullTrim(String text) {
-		String result = text == null ? null : text.replaceAll("(?is)\\s", " ").trim();
+		String result = text == null ? null : text.replaceAll("(?is)(\\s|\\xA0)", " ").trim();
 		return result == null || result.isEmpty() ? null : result;
 	}
 

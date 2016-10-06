@@ -19,6 +19,7 @@ public class TextUtilTest {
 	@Test
 	public void fullTrim() {
 		assertEquals("abc   def ghi", TextUtil.fullTrim(" \t abc \t def\nghi \t  "));
+		assertEquals("X Y", TextUtil.fullTrim("X\u00A0Y"));
 	}
 
 	@Test
