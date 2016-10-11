@@ -72,6 +72,22 @@ public class HTMLUtil {
 		return trechos;
 	}
 
+	public static String extractTabularFieldValue(String tabularFieldName, String html) {
+		if (html != null)
+			for (String table : extractTablesHTML(html))
+				if (table.contains(tabularFieldName))
+					for (String row : extractTableRowsHTML(table))
+						if (row.contains(tabularFieldName)) {
+							boolean found = false;
+							for (String col : extractTableCellsHTML(row))
+								if (textHTML(col).equalsIgnoreCase(tabularFieldName))
+									found = true;
+								else if (found)
+									return textHTML(col);
+						}
+		return null;
+	}
+
 	public static String textHTML(String html) {
 		return textHTML(html, Pattern.compile("(?is)<[^/>]*>([^<]*)</[^>]*>")).trim();
 	}

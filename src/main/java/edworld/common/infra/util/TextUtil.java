@@ -37,7 +37,7 @@ public abstract class TextUtil {
 		if (conteudo instanceof BigDecimal)
 			return ((BigDecimal) conteudo).toPlainString().replace(",", "").replace(".", ",");
 		if (conteudo instanceof Calendar)
-			return DataUtil.dataToString((Calendar) conteudo);
+			return DateUtil.dateToString((Calendar) conteudo);
 		if (conteudo instanceof String[])
 			return formatar(pack((String[]) conteudo, "", " | ", ""));
 		if (conteudo instanceof Link)
@@ -105,5 +105,59 @@ public abstract class TextUtil {
 		}
 		list.add(remainingText);
 		return list.toArray(new String[list.size()]);
+	}
+
+	public static String chk(String parameter) {
+		return hasContent(parameter) ? parameter.trim() : null;
+	}
+
+	public static String[] chk(String[] parameter) {
+		if (hasContent(parameter)) {
+			List<String> result = new ArrayList<>();
+			for (String item : parameter)
+				if (hasContent(item))
+					result.add(item);
+			return result.toArray(new String[result.size()]);
+		}
+		return null;
+	}
+
+	public static Integer chkInt(String parameter) {
+		return hasContent(parameter) ? Integer.parseInt(parameter.trim()) : null;
+	}
+
+	public static BigDecimal chkDec(String parameter) {
+		return hasContent(parameter) ? new BigDecimal(parameter.trim()) : null;
+	}
+
+	public static BigDecimal chkDec(String parameter, String thousandSeparator, String decimalSeparator) {
+		return hasContent(parameter)
+				? new BigDecimal(parameter.trim().replace(thousandSeparator, "").replace(decimalSeparator, ".")) : null;
+	}
+
+	public static Double chkDbl(String parameter) {
+		return hasContent(parameter) ? Double.parseDouble(parameter.trim()) : null;
+	}
+
+	public static Double chkDbl(String parameter, String thousandSeparator, String decimalSeparator) {
+		return hasContent(parameter)
+				? Double.parseDouble(parameter.trim().replace(thousandSeparator, "").replace(decimalSeparator, "."))
+				: null;
+	}
+
+	public static Boolean chkBool(String parameter, Boolean valorDefault) {
+		return hasContent(parameter) ? Boolean.parseBoolean(parameter.trim()) : valorDefault;
+	}
+
+	public static boolean hasContent(String parameter) {
+		return parameter != null && !parameter.trim().isEmpty() && !parameter.trim().equals("(null)");
+	}
+
+	public static boolean hasContent(String[] parameter) {
+		if (parameter != null)
+			for (String item : parameter)
+				if (hasContent(item))
+					return true;
+		return false;
 	}
 }

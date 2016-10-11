@@ -4,16 +4,16 @@ import java.util.Calendar;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import edworld.common.infra.util.DataUtil;
+import edworld.common.infra.util.DateUtil;
 
 public class CalendarAdapter extends XmlAdapter<String, Calendar> {
 	@Override
 	public String marshal(Calendar dataHora) throws Exception {
-		return DataUtil.dataToString(dataHora);
+		return DateUtil.dateToString(dataHora);
 	}
 
 	@Override
 	public Calendar unmarshal(String dataHora) throws Exception {
-		return DataUtil.parseData(dataHora);
+		return DateUtil.parseDate(dataHora);
 	}
 }

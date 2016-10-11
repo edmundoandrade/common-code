@@ -70,7 +70,7 @@ public abstract class JSONUtil {
 	public static ObjectMapper objectMapper() {
 		if (objectMapper == null) {
 			objectMapper = new ObjectMapper().disable(Feature.WRITE_DATES_AS_TIMESTAMPS).enable(Feature.INDENT_OUTPUT);
-			objectMapper.setDateFormat(DataUtil.FORMATO_TIMESTAMP);
+			objectMapper.setDateFormat(DateUtil.FORMAT_TIMESTAMP);
 		}
 		return objectMapper;
 	}

@@ -17,6 +17,8 @@ import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
 
+import edworld.common.infra.util.TextUtil;
+
 public class RecursoPDF {
 	private PDFont fonteNormal = PDType1Font.HELVETICA;
 	private PDFont fonteNegrito = PDType1Font.HELVETICA_BOLD;
@@ -105,6 +107,18 @@ public class RecursoPDF {
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	public float exibirTexto(float x, float y, String texto, PDFont fonte, float fonteTamanho, int lineLength) {
+		return exibirTexto(x, y, texto, fonte, fonteTamanho, lineLength, x, lineLength);
+	}
+
+	public float exibirTexto(float x, float y, String texto, PDFont fonte, float fonteTamanho, int lineLength,
+			float firstLineX, int firstLineLength) {
+		float result = 0;
+		for (String linha : TextUtil.wordWrap(texto, lineLength, firstLineLength))
+			result += exibirLinhaTexto(result == 0 ? firstLineX : x, y, linha, fonte, fonteTamanho, false);
+		return result;
 	}
 
 	public float exibirLinhaTexto(float x, float y, String texto, PDFont fonte, float fonteTamanho) {

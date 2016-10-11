@@ -12,7 +12,7 @@ public class TextUtilTest {
 	@Test
 	public void formatar() {
 		assertEquals("3091,572", TextUtil.formatar(new BigDecimal("3.091572E+3")));
-		assertEquals("28/07/2016", TextUtil.formatar(DataUtil.data(28, 7, 2016)));
+		assertEquals("28/07/2016", TextUtil.formatar(DateUtil.date(28, 7, 2016)));
 		assertEquals("Sim", TextUtil.formatar(true));
 	}
 

@@ -1,6 +1,6 @@
 package edworld.common.core.entity;
 
-import static edworld.common.infra.util.DataUtil.dataHoraToString;
+import static edworld.common.infra.util.DateUtil.dateTimeToString;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -30,7 +30,7 @@ public class EntidadeVersionada {
 
 	@JsonIgnore
 	public String getUltimoRegistro() {
-		return "Versão " + versao + " por " + usuario + " em " + dataHoraToString(momento.getTimestamp());
+		return "Versão " + versao + " por " + usuario + " em " + dateTimeToString(momento.getTimestamp());
 	}
 
 	public void incrementarVersao() {
