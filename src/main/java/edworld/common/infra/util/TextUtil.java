@@ -12,15 +12,16 @@ import edworld.common.core.Image;
 import edworld.common.core.Link;
 
 public abstract class TextUtil {
-	public static final String REGEX_PREPOSITION = "d[aeo]s?|por|pel[ao]s?|com|sem|nem|em|n[ao]s?|ou";
+	public static final String REGEX_TERMS_TO_IGNORE = "[aeo]s?|d[aeo]s?|por|pel[ao]s?|com|sem|nem|em|n[ao]s?|ou";
 	public static final String LINE_BREAK = System.getProperty("line.separator");
 
 	public static String standard(String name) {
 		if (name == null)
 			return null;
 		return removeDiacritics(name.toLowerCase()).replaceAll("[\\s/<=>;:\\.,()\\?]", "_")
-				.replaceAll("_(" + REGEX_PREPOSITION + ")_", "_")
-				.replaceAll("^(.*)_(" + REGEX_PREPOSITION + ")$", "$1");
+				.replaceAll("^(" + REGEX_TERMS_TO_IGNORE + ")_(.*)$", "$2")
+				.replaceAll("_(" + REGEX_TERMS_TO_IGNORE + ")_", "_")
+				.replaceAll("^(.*)_(" + REGEX_TERMS_TO_IGNORE + ")$", "$1");
 	}
 
 	public static String removeDiacritics(String text) {
@@ -112,10 +113,11 @@ public abstract class TextUtil {
 
 	public static String normalizePhonemes(String text) {
 		return standard(text).replaceAll("s?ch", "x").replace("h", "").replace("e", "i").replace("o", "u")
-				.replace("ci", "si").replaceAll("r([cdfst])", "$1").replaceAll("z|r?ç", "s").replaceAll("sc|qu|k", "c")
-				.replaceAll("gu|j", "g").replace("ll", "l").replace("cc", "c").replace("ff", "f").replace("gg", "g")
-				.replace("mm", "m").replace("nn", "n").replace("rr", "r").replace("ss", "s").replace("tt", "t")
-				.replace("ii", "i").replace("uu", "u");
+				.replace("ci", "si").replaceAll("r([cdfglpqst])", "$1").replaceAll("z|r?ç", "s")
+				.replaceAll("sc|qu|k", "c").replaceAll("gu|j", "g").replace("cc", "c").replace("ff", "f")
+				.replace("gg", "g").replace("ll", "l").replace("mm", "m").replace("nn", "n").replace("pp", "p")
+				.replace("qq", "q").replace("rr", "r").replace("ss", "s").replace("tt", "t").replace("ii", "i")
+				.replace("uu", "u");
 	}
 
 	public static String chk(String parameter) {

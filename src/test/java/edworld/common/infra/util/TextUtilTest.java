@@ -15,6 +15,7 @@ public class TextUtilTest {
 		assertEquals("tabela_valores_media_-_cento", TextUtil.standard("Tabela de VALORES/media - por cento"));
 		assertEquals("preco_dolares_reais", TextUtil.standard("Preço em Dólares ou Reais"));
 		assertEquals("casa", TextUtil.standard("Casa dos"));
+		assertEquals("silva", TextUtil.standard("DA SILVA"));
 	}
 
 	@Test
@@ -52,5 +53,6 @@ public class TextUtilTest {
 		assertEquals("atur_xnidir_xavis", TextUtil.normalizePhonemes("Arthur Schneider Chaves"));
 		assertEquals("liunadu_acinu_sifirinu", TextUtil.normalizePhonemes("Leonardo Aquino Zefferino"));
 		assertEquals("luis_susa_lagi", TextUtil.normalizePhonemes("Luiz Souza da Laje"));
+		assertEquals("uginsia", TextUtil.normalizePhonemes("DA URGÊNCIA"));
 	}
 }
