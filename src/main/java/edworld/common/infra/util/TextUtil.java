@@ -17,7 +17,8 @@ public abstract class TextUtil {
 	public static String standard(String name) {
 		if (name == null)
 			return null;
-		return removeDiacritics(name.toLowerCase()).replaceAll("[\\s/<=>;:\\.,()\\?]", "_").replaceAll("_d[aeo]_", "_");
+		return removeDiacritics(name.toLowerCase()).replaceAll("[\\s/<=>;:\\.,()\\?]", "_")
+				.replaceAll("_d[aeo]s?_", "_").replaceAll("^(.*)_d[aeo]s?$", "$1");
 	}
 
 	public static String removeDiacritics(String text) {

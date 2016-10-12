@@ -37,4 +37,11 @@ public class TextUtilTest {
 		assertEquals("g", TextUtil.wordWrap("abcdefg", 3)[2]);
 		assertEquals("fg", TextUtil.wordWrap("abcdefg", 2, 3)[2]);
 	}
+
+	@Test
+	public void standard() {
+		assertEquals("casa_farinha", TextUtil.standard("Casa da Farinha"));
+		assertEquals("tabela_valores_media_-_ok", TextUtil.standard("Tabela de VALORES/media - OK"));
+		assertEquals("casa", TextUtil.standard("Casa dos"));
+	}
 }
