@@ -53,6 +53,7 @@ public class TextUtilTest {
 		assertEquals("atur_xnidir_xavis", TextUtil.normalizePhonemes("Arthur Schneider Chaves"));
 		assertEquals("liunadu_acinu_sifirinu", TextUtil.normalizePhonemes("Leonardo Aquino Zefferino"));
 		assertEquals("luis_susa_lagi", TextUtil.normalizePhonemes("Luiz Souza da Laje"));
-		assertEquals("uginsia", TextUtil.normalizePhonemes("DA URGÊNCIA"));
+		assertEquals("ugisia", TextUtil.normalizePhonemes("DA URGÊNCIA"));
+		assertEquals("adri_capus", TextUtil.normalizePhonemes("Andrey Campos"));
 	}
 }

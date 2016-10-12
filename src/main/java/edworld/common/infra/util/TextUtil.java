@@ -112,12 +112,12 @@ public abstract class TextUtil {
 	}
 
 	public static String normalizePhonemes(String text) {
-		return standard(text).replaceAll("s?ch", "x").replace("h", "").replace("e", "i").replace("o", "u")
-				.replace("ci", "si").replaceAll("r([cdfglpqst])", "$1").replaceAll("z|r?ç", "s")
-				.replaceAll("sc|qu|k", "c").replaceAll("gu|j", "g").replace("cc", "c").replace("ff", "f")
-				.replace("gg", "g").replace("ll", "l").replace("mm", "m").replace("nn", "n").replace("pp", "p")
-				.replace("qq", "q").replace("rr", "r").replace("ss", "s").replace("tt", "t").replace("ii", "i")
-				.replace("uu", "u");
+		return standard(text).replaceAll("s?ch", "x").replace("h", "").replaceAll("[ey]", "i").replace("o", "u")
+				.replace("ci", "si").replaceAll("r([cdfglpqst])", "$1").replaceAll("n([cdst])", "$1")
+				.replaceAll("m([pb])", "$1").replaceAll("z|r?ç", "s").replaceAll("sc|qu|k", "c").replaceAll("gu|j", "g")
+				.replace("cc", "c").replace("ff", "f").replace("gg", "g").replace("ll", "l").replace("mm", "m")
+				.replace("nn", "n").replace("pp", "p").replace("qq", "q").replace("rr", "r").replace("ss", "s")
+				.replace("tt", "t").replace("ii", "i").replace("uu", "u");
 	}
 
 	public static String chk(String parameter) {
