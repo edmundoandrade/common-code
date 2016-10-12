@@ -1,6 +1,6 @@
 package edworld.common.infra;
 
-import static edworld.common.infra.util.TextUtil.formatar;
+import static edworld.common.infra.util.TextUtil.format;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -139,6 +139,6 @@ public class RecursoXML extends RecursoWEB<Document> {
 		String seqAtributos = "";
 		for (String atributo : atributos)
 			seqAtributos += " " + atributo;
-		return "<" + nome + seqAtributos + ">" + formatar(conteudo) + "</" + nome + ">";
+		return "<" + nome + seqAtributos + ">" + format(conteudo) + "</" + nome + ">";
 	}
 }

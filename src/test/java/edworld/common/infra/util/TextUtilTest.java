@@ -10,10 +10,18 @@ import org.junit.Test;
 
 public class TextUtilTest {
 	@Test
-	public void formatar() {
-		assertEquals("3091,572", TextUtil.formatar(new BigDecimal("3.091572E+3")));
-		assertEquals("28/07/2016", TextUtil.formatar(DateUtil.date(28, 7, 2016)));
-		assertEquals("Sim", TextUtil.formatar(true));
+	public void standard() {
+		assertEquals("casa_farinha", TextUtil.standard("Casa da Farinha"));
+		assertEquals("tabela_valores_media_-_cento", TextUtil.standard("Tabela de VALORES/media - por cento"));
+		assertEquals("preco_dolares_reais", TextUtil.standard("Preço em Dólares ou Reais"));
+		assertEquals("casa", TextUtil.standard("Casa dos"));
+	}
+
+	@Test
+	public void format() {
+		assertEquals("3091,572", TextUtil.format(new BigDecimal("3.091572E+3")));
+		assertEquals("28/07/2016", TextUtil.format(DateUtil.date(28, 7, 2016)));
+		assertEquals("Sim", TextUtil.format(true));
 	}
 
 	@Test
@@ -39,10 +47,10 @@ public class TextUtilTest {
 	}
 
 	@Test
-	public void standard() {
-		assertEquals("casa_farinha", TextUtil.standard("Casa da Farinha"));
-		assertEquals("tabela_valores_media_-_cento", TextUtil.standard("Tabela de VALORES/media - por cento"));
-		assertEquals("preco_dolares_reais", TextUtil.standard("Preço em Dólares ou Reais"));
-		assertEquals("casa", TextUtil.standard("Casa dos"));
+	public void normalizePhonemes() {
+		assertEquals("atur_gasia", TextUtil.normalizePhonemes("Arthur Garcia"));
+		assertEquals("atur_xnidir_xavis", TextUtil.normalizePhonemes("Arthur Schneider Chaves"));
+		assertEquals("liunadu_acinu_sifirinu", TextUtil.normalizePhonemes("Leonardo Aquino Zefferino"));
+		assertEquals("luis_susa_lagi", TextUtil.normalizePhonemes("Luiz Souza da Laje"));
 	}
 }

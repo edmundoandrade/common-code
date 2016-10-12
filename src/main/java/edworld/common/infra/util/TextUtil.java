@@ -32,22 +32,22 @@ public abstract class TextUtil {
 		return result == null || result.isEmpty() ? null : result;
 	}
 
-	public static String formatar(Object conteudo) {
-		if (conteudo == null)
+	public static String format(Object data) {
+		if (data == null)
 			return "";
-		if (conteudo instanceof Boolean)
-			return (Boolean) conteudo ? "Sim" : "Não";
-		if (conteudo instanceof BigDecimal)
-			return ((BigDecimal) conteudo).toPlainString().replace(",", "").replace(".", ",");
-		if (conteudo instanceof Calendar)
-			return DateUtil.dateToString((Calendar) conteudo);
-		if (conteudo instanceof String[])
-			return formatar(pack((String[]) conteudo, "", " | ", ""));
-		if (conteudo instanceof Link)
-			return ((Link) conteudo).toHTML();
-		if (conteudo instanceof Image)
-			return ((Image) conteudo).toHTML();
-		return conteudo.toString().trim();
+		if (data instanceof Boolean)
+			return (Boolean) data ? "Sim" : "Não";
+		if (data instanceof BigDecimal)
+			return ((BigDecimal) data).toPlainString().replace(",", "").replace(".", ",");
+		if (data instanceof Calendar)
+			return DateUtil.dateToString((Calendar) data);
+		if (data instanceof String[])
+			return format(pack((String[]) data, "", " | ", ""));
+		if (data instanceof Link)
+			return ((Link) data).toHTML();
+		if (data instanceof Image)
+			return ((Image) data).toHTML();
+		return data.toString().trim();
 	}
 
 	public static String pack(String[] items) {
@@ -108,6 +108,14 @@ public abstract class TextUtil {
 		}
 		list.add(remainingText);
 		return list.toArray(new String[list.size()]);
+	}
+
+	public static String normalizePhonemes(String text) {
+		return standard(text).replaceAll("s?ch", "x").replace("h", "").replace("e", "i").replace("o", "u")
+				.replace("ci", "si").replaceAll("r([cdfst])", "$1").replaceAll("z|r?ç", "s").replaceAll("sc|qu|k", "c")
+				.replaceAll("gu|j", "g").replace("ll", "l").replace("cc", "c").replace("ff", "f").replace("gg", "g")
+				.replace("mm", "m").replace("nn", "n").replace("rr", "r").replace("ss", "s").replace("tt", "t")
+				.replace("ii", "i").replace("uu", "u");
 	}
 
 	public static String chk(String parameter) {
