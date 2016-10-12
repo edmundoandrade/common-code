@@ -41,7 +41,8 @@ public class TextUtilTest {
 	@Test
 	public void standard() {
 		assertEquals("casa_farinha", TextUtil.standard("Casa da Farinha"));
-		assertEquals("tabela_valores_media_-_ok", TextUtil.standard("Tabela de VALORES/media - OK"));
+		assertEquals("tabela_valores_media_-_cento", TextUtil.standard("Tabela de VALORES/media - por cento"));
+		assertEquals("preco_dolares_reais", TextUtil.standard("Preço em Dólares ou Reais"));
 		assertEquals("casa", TextUtil.standard("Casa dos"));
 	}
 }

@@ -12,13 +12,15 @@ import edworld.common.core.Image;
 import edworld.common.core.Link;
 
 public abstract class TextUtil {
+	public static final String REGEX_PREPOSITION = "d[aeo]s?|por|pel[ao]s?|com|sem|nem|em|n[ao]s?|ou";
 	public static final String LINE_BREAK = System.getProperty("line.separator");
 
 	public static String standard(String name) {
 		if (name == null)
 			return null;
 		return removeDiacritics(name.toLowerCase()).replaceAll("[\\s/<=>;:\\.,()\\?]", "_")
-				.replaceAll("_d[aeo]s?_", "_").replaceAll("^(.*)_d[aeo]s?$", "$1");
+				.replaceAll("_(" + REGEX_PREPOSITION + ")_", "_")
+				.replaceAll("^(.*)_(" + REGEX_PREPOSITION + ")$", "$1");
 	}
 
 	public static String removeDiacritics(String text) {
