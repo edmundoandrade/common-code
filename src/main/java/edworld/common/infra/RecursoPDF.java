@@ -115,10 +115,10 @@ public class RecursoPDF {
 
 	public float exibirTexto(float x, float y, String texto, PDFont fonte, float fonteTamanho, int lineLength,
 			float firstLineX, int firstLineLength) {
-		float result = 0;
+		float y0 = y;
 		for (String linha : TextUtil.wordWrap(texto, lineLength, firstLineLength))
-			result += exibirLinhaTexto(result == 0 ? firstLineX : x, y, linha, fonte, fonteTamanho, false);
-		return result;
+			y -= exibirLinhaTexto(y == y0 ? firstLineX : x, y, linha, fonte, fonteTamanho, false);
+		return y0 - y;
 	}
 
 	public float exibirLinhaTexto(float x, float y, String texto, PDFont fonte, float fonteTamanho) {
