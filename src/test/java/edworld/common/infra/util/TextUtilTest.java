@@ -55,5 +55,6 @@ public class TextUtilTest {
 		assertEquals("luis_susa_lagi", TextUtil.normalizePhonemes("Luiz Souza da Laje"));
 		assertEquals("ugisia", TextUtil.normalizePhonemes("DA URGÊNCIA"));
 		assertEquals("adri_capus", TextUtil.normalizePhonemes("Andrey Campos"));
+		assertEquals(TextUtil.normalizePhonemes("Yasmim Da Silva"), TextUtil.normalizePhonemes("Yasmin Da Silva"));
 	}
 }
