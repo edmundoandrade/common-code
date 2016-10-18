@@ -30,20 +30,20 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-public class RecursoXML extends RecursoWEB<Document> {
-	public RecursoXML(final String enderecoURL) {
-		this(enderecoURL, Config.getEncoding());
+public class ResourceXML extends ResourceWEB<Document> {
+	public ResourceXML(final String url) {
+		this(url, Config.getEncoding());
 	}
 
-	public RecursoXML(final String enderecoURL, final String encoding) {
-		super(enderecoURL, new Callable<Document>() {
+	public ResourceXML(final String url, final String encoding) {
+		super(url, new Callable<Document>() {
 			@Override
 			public Document call() throws Exception {
-				if (enderecoURL.startsWith("file:"))
-					return read(new URL(enderecoURL).openStream(), encoding);
+				if (url.startsWith("file:"))
+					return read(new URL(url).openStream(), encoding);
 				CloseableHttpClient httpclient = openHttpClient();
 				try {
-					CloseableHttpResponse response = httpclient.execute(httpGet(enderecoURL));
+					CloseableHttpResponse response = httpclient.execute(httpGet(url));
 					try {
 						if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK)
 							throw new IllegalArgumentException(errorDetail(response, encoding));
@@ -71,46 +71,46 @@ public class RecursoXML extends RecursoWEB<Document> {
 	}
 
 	@Override
-	public void arquivar(File destino) {
-		destino.getParentFile().mkdirs();
+	public void save(File target) {
+		target.getParentFile().mkdirs();
 		try {
-			TransformerFactory.newInstance().newTransformer().transform(new DOMSource(getConteudo()),
-					new StreamResult(destino));
+			TransformerFactory.newInstance().newTransformer().transform(new DOMSource(getContents()),
+					new StreamResult(target));
 		} catch (TransformerException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
 
-	public List<Element> getElementos(String nome) {
-		return getElementos(getConteudo().getDocumentElement(), nome);
+	public List<Element> getElements(String name) {
+		return getElements(getContents().getDocumentElement(), name);
 	}
 
-	public static String getConteudoPropriedade(Element entidade, String propriedade) {
-		NodeList elements = entidade.getElementsByTagName(propriedade);
+	public static String getProperty(Element entity, String property) {
+		NodeList elements = entity.getElementsByTagName(property);
 		if (elements.getLength() == 0 || elements.item(0).getTextContent().trim().isEmpty())
 			return null;
 		return elements.item(0).getTextContent().trim();
 	}
 
-	public static List<Element> getElementos(Element entidade, String nome) {
-		return toList(entidade.getElementsByTagName(nome));
+	public static List<Element> getElements(Element entity, String name) {
+		return toList(entity.getElementsByTagName(name));
 	}
 
-	private static List<Element> toList(NodeList itens) {
-		List<Element> lista = new ArrayList<Element>();
-		for (int i = 0; i < itens.getLength(); i++)
-			lista.add((Element) itens.item(i));
-		return lista;
+	private static List<Element> toList(NodeList items) {
+		List<Element> list = new ArrayList<Element>();
+		for (int i = 0; i < items.getLength(); i++)
+			list.add((Element) items.item(i));
+		return list;
 	}
 
-	public static List<Element> getElementosXPath(Element entidade, String xPath) {
-		List<Element> lista = new ArrayList<Element>();
+	public static List<Element> getXPathElements(Element entity, String xPath) {
+		List<Element> list = new ArrayList<Element>();
 		try {
-			NodeList itens = (NodeList) XPathFactory.newInstance().newXPath().compile(xPath).evaluate(entidade,
+			NodeList itens = (NodeList) XPathFactory.newInstance().newXPath().compile(xPath).evaluate(entity,
 					XPathConstants.NODESET);
 			for (int i = 0; i < itens.getLength(); i++)
-				lista.add((Element) itens.item(i));
-			return lista;
+				list.add((Element) itens.item(i));
+			return list;
 		} catch (XPathExpressionException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -127,18 +127,18 @@ public class RecursoXML extends RecursoWEB<Document> {
 		}
 	}
 
-	public static String sanitizeXML(String conteudo) {
+	public static String sanitizeXML(String contents) {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < conteudo.length(); i++)
-			if (XMLChar.isValid(conteudo.charAt(i)))
-				sb.append(conteudo.charAt(i));
+		for (int i = 0; i < contents.length(); i++)
+			if (XMLChar.isValid(contents.charAt(i)))
+				sb.append(contents.charAt(i));
 		return sb.toString();
 	}
 
-	public static String elementoXML(String nome, Object conteudo, String... atributos) {
-		String seqAtributos = "";
-		for (String atributo : atributos)
-			seqAtributos += " " + atributo;
-		return "<" + nome + seqAtributos + ">" + format(conteudo) + "</" + nome + ">";
+	public static String xmlElement(String name, Object contents, String... attributes) {
+		String seqAttributes = "";
+		for (String attribute : attributes)
+			seqAttributes += " " + attribute;
+		return "<" + name + seqAttributes + ">" + format(contents) + "</" + name + ">";
 	}
 }
