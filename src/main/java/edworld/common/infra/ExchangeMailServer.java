@@ -23,6 +23,27 @@ public class ExchangeMailServer {
 		this.credentials = new WebCredentials(userName, password, domain);
 	}
 
+	/**
+	 * Sends an e-mail to the specified list of recipient addresses. Before a
+	 * sequence of carbon copy recipients, add the following special address:
+	 * <code>--cc</code>. Before a sequence of blind carbon copy recipients, add
+	 * one of the following special addresses: <code>--bcc</code> or
+	 * <code>--cco</code>.
+	 * 
+	 * @param subject
+	 *            the message's subject, title or purpose
+	 * @param text
+	 *            textual message or any HTML contents
+	 * @param from
+	 *            the sender's e-mail address
+	 * @param attachments
+	 *            array of names corresponding to the attached files
+	 * @param toRecipients
+	 *            sequence of e-mail addresses corresponding to the recipients.
+	 *            Those defined after the special addresses <code>--cc</code>
+	 *            and <code>--bcc</code> will be treated as carbon copy and
+	 *            blind carbon copy recipients, respectively.
+	 */
 	public void sendMail(String subject, String text, String from, String[] attachments, String... toRecipients) {
 		try {
 			EmailMessage msg = new EmailMessage(getService());
@@ -30,8 +51,20 @@ public class ExchangeMailServer {
 				msg.setFrom(getEmailAddressFromString(from));
 			msg.setSubject(subject);
 			msg.setBody(getMessageBodyFromText(text));
+			String recipientType = "to";
 			for (String toRecipient : toRecipients)
-				msg.getToRecipients().add(toRecipient);
+				if (toRecipient.equalsIgnoreCase("--to"))
+					recipientType = "to";
+				else if (toRecipient.equalsIgnoreCase("--cc"))
+					recipientType = "cc";
+				else if (toRecipient.equalsIgnoreCase("--bcc") || toRecipient.equalsIgnoreCase("--cco"))
+					recipientType = "bcc";
+				else if (recipientType.equalsIgnoreCase("cc"))
+					msg.getCcRecipients().add(toRecipient);
+				else if (recipientType.equalsIgnoreCase("bcc"))
+					msg.getBccRecipients().add(toRecipient);
+				else
+					msg.getToRecipients().add(toRecipient);
 			if (attachments != null)
 				for (String fileName : attachments)
 					msg.getAttachments().addFileAttachment(fileName);
