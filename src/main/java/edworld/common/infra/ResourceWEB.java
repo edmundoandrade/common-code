@@ -71,7 +71,7 @@ public abstract class ResourceWEB<T> {
 	}
 
 	protected static HttpRequestBase httpGet(String url) {
-		return configProfix(new HttpGet(url));
+		return configProxy(new HttpGet(url));
 	}
 
 	protected static HttpRequestBase httpPost(String url, List<NameValuePair> urlParameters) {
@@ -81,15 +81,20 @@ public abstract class ResourceWEB<T> {
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException(e);
 		}
-		return configProfix(post);
+		return configProxy(post);
 	}
 
-	private static HttpRequestBase configProfix(HttpRequestBase request) {
+	private static HttpRequestBase configProxy(HttpRequestBase request) {
+		String httpNonProxyHosts = System.getProperty("http.nonProxyHosts", "");
+		if (!httpNonProxyHosts.isEmpty())
+			for (String exceptionHost : httpNonProxyHosts.split("\\s*\\|\\s*"))
+				if (request.getURI().getHost().matches(exceptionHost.replace(".", "\\.").replace("*", ".*")))
+					return request;
 		String httpProxyHost = System.getProperty("http.proxyHost", "");
 		int httpProxyPort = Integer.parseInt(System.getProperty("http.proxyPort", "80"));
 		if (!httpProxyHost.isEmpty())
 			request.setConfig(
-					RequestConfig.custom().setProxy(new HttpHost(httpProxyHost, httpProxyPort, "http")).build());
+					RequestConfig.custom().setProxy(new HttpHost(httpProxyHost, httpProxyPort, null)).build());
 		return request;
 	}
 
