@@ -86,9 +86,13 @@ public class ResourceXML extends ResourceWEB<Document> {
 	}
 
 	public static String getProperty(Element entity, String property) {
+		return getProperty(entity, property, null);
+	}
+
+	public static String getProperty(Element entity, String property, String defaultTextContent) {
 		NodeList elements = entity.getElementsByTagName(property);
 		if (elements.getLength() == 0 || elements.item(0).getTextContent().trim().isEmpty())
-			return null;
+			return defaultTextContent;
 		return elements.item(0).getTextContent().trim();
 	}
 
