@@ -17,21 +17,19 @@ import edworld.pdfreader4humans.impl.MainPDFComponentLocator;
 
 public abstract class PDFUtil {
 	public static String toXML(URL url) {
-		try {
-			return new PDFReader(url, new MainPDFComponentLocator(), new MainBoxDetector(), new MainMarginDetector())
-					.toXML();
-		} catch (IOException e) {
-			throw new IllegalArgumentException(e);
-		}
+		return toXML(url, 0);
+	}
+
+	public static String toXML(URL url, float containmentTolerance) {
+		return getPDFReader(url, containmentTolerance).toXML();
 	}
 
 	public static List<String> toTextLines(URL url) {
-		try {
-			return new PDFReader(url, new MainPDFComponentLocator(), new MainBoxDetector(), new MainMarginDetector())
-					.toTextLines();
-		} catch (IOException e) {
-			throw new IllegalArgumentException(e);
-		}
+		return toTextLines(url, 0);
+	}
+
+	public static List<String> toTextLines(URL url, float containmentTolerance) {
+		return getPDFReader(url, containmentTolerance).toTextLines();
 	}
 
 	public static boolean isValid(File file) {
@@ -42,6 +40,15 @@ public abstract class PDFUtil {
 			} finally {
 				input.close();
 			}
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	private static PDFReader getPDFReader(URL url, float containmentTolerance) {
+		try {
+			return new PDFReader(url, new MainPDFComponentLocator(), new MainBoxDetector(), new MainMarginDetector(),
+					containmentTolerance);
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
 		}

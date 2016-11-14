@@ -27,11 +27,11 @@ public abstract class PDFDocument {
 	}
 
 	public String toXML() {
-		return PDFUtil.toXML(url);
+		return PDFUtil.toXML(url, getContainmentTolerance());
 	}
 
 	public List<String> toTextLines() {
-		return PDFUtil.toTextLines(url);
+		return PDFUtil.toTextLines(url, getContainmentTolerance());
 	}
 
 	public List<Element> getXMLElements() {
@@ -53,6 +53,10 @@ public abstract class PDFDocument {
 			return;
 		loadInfo();
 		infoLoaded = true;
+	}
+
+	protected float getContainmentTolerance() {
+		return 0;
 	}
 
 	protected abstract void loadInfo();

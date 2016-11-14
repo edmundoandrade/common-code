@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edworld</groupId>
 	<artifactId>common-code</artifactId>
-	<version>2.2.2</version>
+	<version>2.2.3</version>
 	<name>Common code</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>edworld</groupId>
 			<artifactId>pdfreader4humans</artifactId>
-			<version>0.9</version>
+			<version>0.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
