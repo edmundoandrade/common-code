@@ -97,17 +97,19 @@ public abstract class TextUtil {
 
 	public static String[] wordWrap(String text, int lineLength, int firstLineLength) {
 		List<String> list = new ArrayList<>();
-		String remainingText = text.trim();
-		int length = firstLineLength;
-		while (remainingText.length() > length) {
-			int pos = remainingText.substring(0, length).lastIndexOf(' ');
-			if (pos < 0)
-				pos = length;
-			list.add(remainingText.substring(0, pos).trim());
-			remainingText = remainingText.substring(pos).trim();
-			length = lineLength;
+		for (String line : TextUtil.toLines(text)) {
+			String remainingText = line.trim();
+			int length = firstLineLength;
+			while (remainingText.length() > length) {
+				int pos = remainingText.substring(0, length).lastIndexOf(' ');
+				if (pos < 0)
+					pos = length;
+				list.add(remainingText.substring(0, pos).trim());
+				remainingText = remainingText.substring(pos).trim();
+				length = lineLength;
+			}
+			list.add(remainingText);
 		}
-		list.add(remainingText);
 		return list.toArray(new String[list.size()]);
 	}
 

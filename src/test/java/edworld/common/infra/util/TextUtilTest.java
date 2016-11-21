@@ -45,6 +45,7 @@ public class TextUtilTest {
 	public void wordWrap() {
 		assertEquals("g", TextUtil.wordWrap("abcdefg", 3)[2]);
 		assertEquals("fg", TextUtil.wordWrap("abcdefg", 2, 3)[2]);
+		assertEquals("c", TextUtil.wordWrap("a\nb\r\nc", 9)[2]);
 	}
 
 	@Test
