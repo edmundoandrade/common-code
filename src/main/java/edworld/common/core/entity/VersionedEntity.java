@@ -33,11 +33,17 @@ public class VersionedEntity {
 		return "Vers." + version + ", " + user + ", " + dateTimeToString(timestamp.getTimestamp());
 	}
 
-	public void incrementarVersao() {
+	public void incrementVersion() {
 		version = version == null ? 1 : version + 1;
 	}
 
-	public void unificarVersionamento(VersionedEntity versionedEntity) {
+	public void setupVersioning(String user, TimestampCalendar timestamp, Integer version) {
+		this.user = user;
+		this.timestamp = timestamp;
+		this.version = version;
+	}
+
+	public void unifyVersioning(VersionedEntity versionedEntity) {
 		this.user = versionedEntity.getUser();
 		this.timestamp = versionedEntity.getTimestamp();
 		this.version = versionedEntity.getVersion();

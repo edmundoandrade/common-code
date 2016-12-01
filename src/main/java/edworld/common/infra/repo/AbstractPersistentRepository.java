@@ -154,11 +154,11 @@ public abstract class AbstractPersistentRepository {
 				input.close();
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("Service unavailable. Cause: " + causa(e));
+			throw new IllegalArgumentException("Service unavailable. Cause: " + cause(e));
 		}
 	}
 
-	protected String causa(IOException e) {
+	protected String cause(IOException e) {
 		if (e.getCause() == null)
 			return e.getMessage();
 		return e.getCause().getMessage();
