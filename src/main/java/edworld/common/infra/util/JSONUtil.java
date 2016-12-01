@@ -26,7 +26,8 @@ public abstract class JSONUtil {
 	}
 
 	public static void toFile(Object object, File targetFile) {
-		targetFile.getParentFile().mkdirs();
+		if (targetFile.getParentFile() != null)
+			targetFile.getParentFile().mkdirs();
 		try {
 			objectMapper().writeValue(targetFile, object);
 		} catch (IOException e) {

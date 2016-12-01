@@ -31,19 +31,19 @@ import edworld.common.infra.boundary.NullableInteger;
 import edworld.common.infra.boundary.NullableStringSequence;
 import edworld.common.infra.boundary.NullableTimestampCalendar;
 import edworld.common.infra.boundary.TimestampCalendar;
-import edworld.common.repo.Criterio;
-import edworld.common.repo.CriterioSQL;
+import edworld.common.repo.Criteria;
+import edworld.common.repo.CriteriaSQL;
 
-public abstract class AbstractRepositorioPersistente {
+public abstract class AbstractPersistentRepository {
 	protected PersistenceManager persistenceContext;
 
-	protected AbstractRepositorioPersistente(PersistenceManager persistenceContext) {
+	protected AbstractPersistentRepository(PersistenceManager persistenceContext) {
 		this.persistenceContext = persistenceContext;
 	}
 
-	protected SQLQuery createQuery(String resourceName, Criterio<?> criterio, Integer limite, String... orderBy) {
+	protected SQLQuery createQuery(String resourceName, Criteria<?> criteria, Integer limit, String... orderBy) {
 		return persistenceContext.getHibernateSession()
-				.createSQLQuery(getSqlResource(resourceName, (CriterioSQL) criterio, limite, orderBy));
+				.createSQLQuery(getSqlResource(resourceName, (CriteriaSQL) criteria, limit, orderBy));
 	}
 
 	protected int executeSQL(final String sql, final Object... params) {
@@ -122,24 +122,24 @@ public abstract class AbstractRepositorioPersistente {
 			statement.setString(index, (String) value);
 	}
 
-	protected String getSqlResource(String resourceName, CriterioSQL criterio, Integer limite, String... orderBy) {
+	protected String getSqlResource(String resourceName, CriteriaSQL criteria, Integer limit, String... orderBy) {
 		String sql = sqlFromResource(resourceName);
-		if (criterio != null) {
-			String restricao = criterio.toSQL();
-			if (!restricao.isEmpty())
-				sql = sql.replaceAll("--(WHERE|AND)", "$1 " + Matcher.quoteReplacement(restricao));
+		if (criteria != null) {
+			String clauses = criteria.toSQL();
+			if (!clauses.isEmpty())
+				sql = sql.replaceAll("--(WHERE|AND)", "$1 " + Matcher.quoteReplacement(clauses));
 		}
 		if (orderBy.length > 0) {
-			String expressaoOrderBy = "ORDER BY ";
-			String prefixo = "";
-			for (String campo : orderBy) {
-				expressaoOrderBy += prefixo + campo;
-				prefixo = ", ";
+			String expressionOrderBy = "ORDER BY ";
+			String prefix = "";
+			for (String field : orderBy) {
+				expressionOrderBy += prefix + field;
+				prefix = ", ";
 			}
-			sql = sql.replaceAll("--ORDER BY", Matcher.quoteReplacement(expressaoOrderBy));
+			sql = sql.replaceAll("--ORDER BY", Matcher.quoteReplacement(expressionOrderBy));
 		}
-		if (limite != null)
-			sql += " LIMIT " + limite;
+		if (limit != null)
+			sql += " LIMIT " + limit;
 		return sql;
 	}
 
@@ -154,7 +154,7 @@ public abstract class AbstractRepositorioPersistente {
 				input.close();
 			}
 		} catch (IOException e) {
-			throw new IllegalArgumentException("Serviço não disponível. Causa: " + causa(e));
+			throw new IllegalArgumentException("Service unavailable. Cause: " + causa(e));
 		}
 	}
 
@@ -220,26 +220,26 @@ public abstract class AbstractRepositorioPersistente {
 		}
 	}
 
-	protected Calendar toCalendar(Object data) {
-		if (data == null)
+	protected Calendar toCalendar(Object date) {
+		if (date == null)
 			return null;
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime((Date) data);
+		calendar.setTime((Date) date);
 		return calendar;
 	}
 
-	protected TimestampCalendar toTimestamp(Object data) {
-		if (data == null)
+	protected TimestampCalendar toTimestamp(Object date) {
+		if (date == null)
 			return null;
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime((Date) data);
+		calendar.setTime((Date) date);
 		return new TimestampCalendar(calendar);
 	}
 
-	protected void verificarIntegridade(String atributo, Object valorReal, Object valorEsperado) {
-		if (!valorEsperado.equals(valorReal))
-			throw new IllegalStateException("Erro de integridade do sistema: " + quoted(atributo) + " deveria ser "
-					+ quoted(valorEsperado.toString()) + " ao invés de "
-					+ (valorReal == null ? "NULL" : quoted(valorReal.toString())) + ".");
+	protected void verifyIntegrity(String attribute, Object actualValue, Object expectedValue) {
+		if (!expectedValue.equals(actualValue))
+			throw new IllegalStateException(
+					"Internal integrity error: " + quoted(attribute) + " should be " + quoted(expectedValue.toString())
+							+ " instead of " + (actualValue == null ? "NULL" : quoted(actualValue.toString())) + ".");
 	}
 }
