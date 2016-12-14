@@ -36,7 +36,7 @@ public class ResourcePDF {
 	private String title;
 	private String version;
 	private PDDocument doc;
-	private PDImageXObject logo;
+	private BufferedImage logo;
 	private PDPageContentStream pageContent;
 	private float pageHeight;
 	private float pageWidth;
@@ -50,11 +50,6 @@ public class ResourcePDF {
 		this.contact = contact;
 		this.logoURL = logoURL;
 		doc = new PDDocument();
-		try {
-			logo = LosslessFactory.createFromImage(doc, getLogo());
-		} catch (IOException e) {
-			throw new IllegalArgumentException(e);
-		}
 	}
 
 	public PDFont getNormalFont() {
@@ -105,7 +100,7 @@ public class ResourcePDF {
 	public float showHeader(float y, boolean continuation) {
 		float y0 = y;
 		try {
-			pageContent.drawImage(logo, 10F, y, logo.getWidth() * 0.1F, logo.getHeight() * 0.1F);
+			showImage(getLogo(), 10F, y, 0.1F, 0.1F);
 			y -= 20F;
 			pageContent.setNonStrokingColor(TITLE_COLOR);
 			y -= showTextLine(40F, y, title, normalFont, TITLE_FONT_SIZE);
@@ -170,11 +165,11 @@ public class ResourcePDF {
 		}
 	}
 
-	public void drawLine(float xI, float yI, float xF, float yF) {
+	public float showImage(BufferedImage image, float x, float y, float widthScale, float heightScale) {
 		try {
-			pageContent.moveTo(xI, yI);
-			pageContent.lineTo(xF, yF);
-			pageContent.stroke();
+			PDImageXObject pdImage = createImage(image);
+			pageContent.drawImage(pdImage, x, y, pdImage.getWidth() * widthScale, pdImage.getHeight() * heightScale);
+			return pdImage.getHeight() * heightScale;
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -190,6 +185,16 @@ public class ResourcePDF {
 			pageContent.newLineAtOffset(250F, 0F);
 			pageContent.showText(contact);
 			pageContent.endText();
+		} catch (IOException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	public void drawLine(float xI, float yI, float xF, float yF) {
+		try {
+			pageContent.moveTo(xI, yI);
+			pageContent.lineTo(xF, yF);
+			pageContent.stroke();
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -228,21 +233,31 @@ public class ResourcePDF {
 		}
 	}
 
-	private String truncate(String text) {
-		if (text.length() < 145)
-			return text;
-		return text.substring(0, 143) + "...";
+	protected PDImageXObject createImage(BufferedImage image) throws IOException {
+		return LosslessFactory.createFromImage(doc, image);
 	}
 
-	private BufferedImage getLogo() throws IOException {
-		return ImageIO.read(logoURL);
+	protected BufferedImage getLogo() {
+		if (logo == null)
+			try {
+				logo = ImageIO.read(logoURL);
+			} catch (IOException e) {
+				throw new IllegalArgumentException(e);
+			}
+		return logo;
 	}
 
-	private float textHeight(PDFont font, float fontSize) throws IOException {
+	protected float textHeight(PDFont font, float fontSize) throws IOException {
 		return font.getBoundingBox().getHeight() * fontSize / 700F;
 	}
 
-	private float textWidth(String text, PDFont font, float fontSize) throws IOException {
+	protected float textWidth(String text, PDFont font, float fontSize) throws IOException {
 		return font.getStringWidth(text) * fontSize / 1000F;
+	}
+
+	protected String truncate(String text) {
+		if (text.length() < 145)
+			return text;
+		return text.substring(0, 143) + "...";
 	}
 }
