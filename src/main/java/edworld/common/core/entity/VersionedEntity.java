@@ -10,14 +10,14 @@ import edworld.common.infra.boundary.TimestampCalendar;
 
 public class VersionedEntity {
 	@XmlElement
-	protected String user;
+	protected String userId;
 	@XmlElement
 	protected TimestampCalendar timestamp;
 	@XmlElement
 	protected Integer version;
 
-	public String getUser() {
-		return user;
+	public String getUserId() {
+		return userId;
 	}
 
 	public TimestampCalendar getTimestamp() {
@@ -30,21 +30,21 @@ public class VersionedEntity {
 
 	@JsonIgnore
 	public String getLastModified() {
-		return "Vers." + version + ", " + user + ", " + dateTimeToString(timestamp.getTimestamp());
+		return "Vers." + version + ", " + userId + ", " + dateTimeToString(timestamp.getTimestamp());
 	}
 
 	public void incrementVersion() {
 		version = version == null ? 1 : version + 1;
 	}
 
-	public void setupVersioning(String user, TimestampCalendar timestamp, Integer version) {
-		this.user = user;
+	public void setupVersioning(String userId, TimestampCalendar timestamp, Integer version) {
+		this.userId = userId;
 		this.timestamp = timestamp;
 		this.version = version;
 	}
 
 	public void unifyVersioning(VersionedEntity versionedEntity) {
-		this.user = versionedEntity.getUser();
+		this.userId = versionedEntity.getUserId();
 		this.timestamp = versionedEntity.getTimestamp();
 		this.version = versionedEntity.getVersion();
 	}
