@@ -3,7 +3,7 @@ common-code
 
 Common code for typical Java applications
 
-Sending e-mail to an MS Exchange server
+Sending e-mail to a MS Exchange server
 -----------
 
 ```
