@@ -30,7 +30,7 @@ public class VersionedEntity {
 
 	@JsonIgnore
 	public String getLastModified() {
-		return "Vers." + version + ", " + userId + ", " + dateTimeToString(timestamp.getTimestamp());
+		return "V." + version + ", " + userId + ", " + dateTimeToString(timestamp.getTimestamp());
 	}
 
 	public void incrementVersion() {

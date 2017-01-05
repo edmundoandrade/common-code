@@ -123,7 +123,7 @@ public abstract class TextUtil {
 	}
 
 	private static String treatNasalVowels(String text) {
-		return text.replaceAll("([aeiou])n ", "$1m ").replaceAll("^(.*[aeiou])n$", "$1m");
+		return text.replaceAll("(?i)([aeiou])n ", "$1m ").replaceAll("(?i)^(.*[aeiou])n$", "$1m");
 	}
 
 	public static String chk(String parameter) {
