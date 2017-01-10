@@ -16,6 +16,9 @@ public class TextUtilTest {
 		assertEquals("preco_dolares_reais", TextUtil.standard("Preço em Dólares ou Reais"));
 		assertEquals("casa", TextUtil.standard("Casa dos"));
 		assertEquals("silva", TextUtil.standard("DA SILVA"));
+		assertEquals("chove_cantaros", TextUtil.standard("Chove a cântaros"));
+		assertEquals("confissoes_recordacoes", TextUtil.standard("Confissões e Recordações"));
+		assertEquals("a__antony_m__e__mikhailov", TextUtil.standard("A. Antony M. E. Mikhailov"));
 	}
 
 	@Test

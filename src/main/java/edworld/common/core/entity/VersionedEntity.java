@@ -1,6 +1,7 @@
 package edworld.common.core.entity;
 
-import static edworld.common.infra.util.DateUtil.dateTimeToString;
+import static edworld.common.infra.util.DateUtil.FORMAT_DATE_TIME_ISO;
+import static edworld.common.infra.util.DateUtil.dateToString;
 
 import javax.xml.bind.annotation.XmlElement;
 
@@ -30,7 +31,7 @@ public class VersionedEntity {
 
 	@JsonIgnore
 	public String getLastModified() {
-		return "V." + version + ", " + userId + ", " + dateTimeToString(timestamp.getTimestamp());
+		return "V." + version + ", " + userId + ", " + dateToString(timestamp.getTimestamp(), FORMAT_DATE_TIME_ISO);
 	}
 
 	public void incrementVersion() {
