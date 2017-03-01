@@ -187,12 +187,12 @@ public abstract class DateUtil {
 	}
 
 	private static String extractStartDate(String range) {
-		return range.trim().toLowerCase().replaceAll("\\s+(a|até)\\s+.*", "").replace("º", "").replaceAll("\\s+de\\s+",
-				"/");
+		return range.trim().toLowerCase().replaceAll("\\s+(a|até|e)\\s+.*", "").replace("º", "")
+				.replaceAll("\\s+de\\s+", "/");
 	}
 
 	private static String extractEndDate(String range) {
-		return range.trim().toLowerCase().replaceAll(".*\\s+(a|até)\\s+", "").replace("º", "")
+		return range.trim().toLowerCase().replaceAll(".*\\s+(a|até|e)\\s+", "").replace("º", "")
 				.replaceAll("\\s+de\\s+", "/").replaceAll("\\s+", "/");
 	}
 }
