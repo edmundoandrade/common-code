@@ -96,7 +96,7 @@ public class HTMLUtil {
 		StringBuffer sb = new StringBuffer();
 		Matcher matcher = regex.matcher(html);
 		while (matcher.find())
-			matcher.appendReplacement(sb, textHTML(matcher.group(1), regex));
+			matcher.appendReplacement(sb, Matcher.quoteReplacement(textHTML(matcher.group(1), regex)));
 		matcher.appendTail(sb);
 		String result = sb.toString();
 		if (regex.matcher(result).find())
