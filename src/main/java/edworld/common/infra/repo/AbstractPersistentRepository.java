@@ -212,6 +212,28 @@ public abstract class AbstractPersistentRepository {
 		return new NullableByteSequence(byteSequence);
 	}
 
+	protected Object dsObject(Object object) {
+		if (object instanceof Integer)
+			return ds((Integer) object);
+		if (object instanceof BigDecimal)
+			return ds((BigDecimal) object);
+		if (object instanceof Double)
+			return ds((Double) object);
+		if (object instanceof Calendar)
+			return ds((Calendar) object);
+		if (object instanceof TimestampCalendar)
+			return ds((TimestampCalendar) object);
+		if (object instanceof Boolean)
+			return ds((Boolean) object);
+		if (object instanceof Enum<?>)
+			return ds((Enum<?>) object);
+		if (object instanceof String[])
+			return ds((String[]) object);
+		if (object instanceof byte[])
+			return ds((byte[]) object);
+		return object == null ? null : object.toString();
+	}
+
 	protected String stringFromClob(Object value) {
 		try {
 			return value == null ? null : ((Clob) value).getSubString(1, (int) ((Clob) value).length());
