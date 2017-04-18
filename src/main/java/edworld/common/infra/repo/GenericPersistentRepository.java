@@ -15,16 +15,32 @@ import edworld.common.repo.RepositoryException;
 public class GenericPersistentRepository extends AbstractPersistentRepository
 		implements Repository<Map<String, Object>> {
 	protected String entityType;
+	protected String generatedPK;
+	protected String userIdField;
+	protected String timestampField;
+	protected String versionField;
+	protected String generatedPKFormula;
 
-	public GenericPersistentRepository(String entityType, PersistenceManager persistenceContext) {
+	public GenericPersistentRepository(String entityType, String generatedPK, String userIdField, String timestampField,
+			String versionField, PersistenceManager persistenceContext) {
+		this(entityType, generatedPK, userIdField, timestampField, versionField, persistenceContext, "DEFAULT");
+	}
+
+	public GenericPersistentRepository(String entityType, String generatedPK, String userIdField, String timestampField,
+			String versionField, PersistenceManager persistenceContext, String generatedPKFormula) {
 		super(persistenceContext);
 		this.entityType = entityType;
+		this.generatedPK = generatedPK;
+		this.userIdField = userIdField;
+		this.timestampField = timestampField;
+		this.versionField = versionField;
+		this.generatedPKFormula = generatedPKFormula;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> list(Principal principal, Criteria<Map<String, Object>> criterio, Integer limite,
+	public List<Map<String, Object>> list(Principal principal, Criteria<Map<String, Object>> criteria, Integer limit,
 			String... orderBy) {
-		SQLQuery query = createQuery("Orgao.sql", criterio, limite, orderBy);
+		SQLQuery query = createQuery(entityType + ".sql", criteria, limit, orderBy);
 		query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
 		return (List<Map<String, Object>>) query.list();
 	}
@@ -33,19 +49,17 @@ public class GenericPersistentRepository extends AbstractPersistentRepository
 		String fields = "";
 		String values = "";
 		String prefix = "";
-		boolean genetaredPK = false;
 		List<Object> parms = new ArrayList<>();
-		for (String field : item.keySet()) {
+		for (String field : getFieldNames(item)) {
 			fields += prefix + field;
-			if (field.equalsIgnoreCase("id")) {
-				values += prefix + "DEFAULT";
-				genetaredPK = true;
-			} else if (field.equalsIgnoreCase("userId")) {
+			if (field.equalsIgnoreCase(generatedPK))
+				values += prefix + generatedPKFormula;
+			else if (field.equalsIgnoreCase(userIdField)) {
 				values += prefix + "?";
 				parms.add(ds(principal.getName()));
-			} else if (field.equalsIgnoreCase("timestamp"))
+			} else if (field.equalsIgnoreCase(timestampField))
 				values += prefix + "current_timestamp";
-			else if (field.equalsIgnoreCase("version"))
+			else if (field.equalsIgnoreCase(versionField))
 				values += prefix + "1";
 			else {
 				values += prefix + "?";
@@ -54,13 +68,14 @@ public class GenericPersistentRepository extends AbstractPersistentRepository
 			prefix = ", ";
 		}
 		String sql = "INSERT INTO " + entityType + " (" + fields + ") VALUES (" + values + ")";
-		if (genetaredPK) {
-			sql += " RETURNING id";
+		if (generatedPK != null) {
+			sql += " RETURNING " + generatedPK;
 			int id = executeReturningSQL(sql, parms.toArray());
-			item.put("id", id);
+			item.put(generatedPK, id);
 		} else
 			executeSQL(sql, parms.toArray());
-		incrementVersion(item);
+		if (versionField != null)
+			incrementVersion(item);
 	}
 
 	public void update(Map<String, Object> item, Principal principal) throws RepositoryException {
@@ -70,20 +85,20 @@ public class GenericPersistentRepository extends AbstractPersistentRepository
 		String prefixFilter = "";
 		List<Object> parms = new ArrayList<>();
 		List<Object> parmsFilter = new ArrayList<>();
-		for (String field : item.keySet())
-			if (field.equalsIgnoreCase("id")) {
-				filter += prefixFilter + "=?";
+		for (String field : getFieldNames(item))
+			if (field.equalsIgnoreCase(generatedPK)) {
+				filter += prefixFilter + field + "=?";
 				prefixFilter = " AND ";
 				parmsFilter.add(dsObject(item.get(field)));
 			} else {
-				if (field.equalsIgnoreCase("userId")) {
+				if (field.equalsIgnoreCase(userIdField)) {
 					values += prefix + field + "=?";
 					parms.add(ds(principal.getName()));
-				} else if (field.equalsIgnoreCase("timestamp"))
+				} else if (field.equalsIgnoreCase(timestampField))
 					values += prefix + field + "=current_timestamp";
-				else if (field.equalsIgnoreCase("version")) {
+				else if (field.equalsIgnoreCase(versionField)) {
 					values += prefix + field + "=" + field + "+1";
-					filter += prefixFilter + "=?";
+					filter += prefixFilter + field + "=?";
 					prefixFilter = " AND ";
 					parmsFilter.add(dsObject(item.get(field)));
 				} else {
@@ -94,7 +109,7 @@ public class GenericPersistentRepository extends AbstractPersistentRepository
 			}
 		parms.addAll(parmsFilter);
 		String sql = "UPDATE " + entityType + " SET " + values + " WHERE " + filter;
-		int qtdLinhas = executeSQL(sql, parms);
+		int qtdLinhas = executeSQL(sql, parms.toArray());
 		if (qtdLinhas == 0)
 			throw new RepositoryException(entityType);
 		incrementVersion(item);
@@ -104,17 +119,30 @@ public class GenericPersistentRepository extends AbstractPersistentRepository
 		String filter = "";
 		String prefixFilter = "";
 		List<Object> parmsFilter = new ArrayList<>();
-		for (String field : item.keySet())
-			if (field.equalsIgnoreCase("id")) {
-				filter += prefixFilter + "=?";
+		for (String field : getFieldNames(item))
+			if (field.equalsIgnoreCase(generatedPK)) {
+				filter += prefixFilter + field + "=?";
 				prefixFilter = " AND ";
 				parmsFilter.add(dsObject(item.get(field)));
 			}
-		executeSQL("DELETE FROM " + entityType + " WHERE " + filter, parmsFilter);
+		executeSQL("DELETE FROM " + entityType + " WHERE " + filter, parmsFilter.toArray());
 	}
 
 	protected void incrementVersion(Map<String, Object> item) {
-		Object version = item.containsKey("version") ? (Integer) item.get("version") + 1 : 1;
-		item.put("version", version);
+		Object version = item.containsKey(versionField) ? (Integer) item.get(versionField) + 1 : 1;
+		item.put(versionField, version);
+	}
+
+	protected List<String> getFieldNames(Map<String, Object> map) {
+		List<String> fieldNames = new ArrayList<>(map.keySet());
+		if (generatedPK != null && !fieldNames.contains(generatedPK))
+			fieldNames.add(generatedPK);
+		if (userIdField != null && !fieldNames.contains(userIdField))
+			fieldNames.add(userIdField);
+		if (timestampField != null && !fieldNames.contains(timestampField))
+			fieldNames.add(timestampField);
+		if (versionField != null && !fieldNames.contains(versionField))
+			fieldNames.add(versionField);
+		return fieldNames;
 	}
 }
