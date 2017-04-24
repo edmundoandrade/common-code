@@ -8,8 +8,8 @@ import edworld.common.infra.util.JSONUtil;
 import edworld.common.repo.Criteria;
 import edworld.common.repo.Repository;
 
-public class RepositorioMemoria<T> implements Repository<T> {
-	public List<T> list(Principal principal, Criteria<T> criterio, Integer limite, String... orderBy) {
+public class MemoryRepository<T> implements Repository<T> {
+	public List<T> list(Principal principal, Criteria<T> criteria, Integer limit, String... orderBy) {
 		return new ArrayList<>();
 	}
 

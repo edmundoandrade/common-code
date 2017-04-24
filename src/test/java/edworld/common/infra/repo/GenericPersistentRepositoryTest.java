@@ -24,8 +24,9 @@ public class GenericPersistentRepositoryTest {
 
 	@Before
 	public void setup() {
-		repository = new GenericPersistentRepository("Table", "id", "userId", "timestamp", "version",
-				new PersistenceManager(null)) {
+		repository = new GenericPersistentRepository("Table", "site, numero", "userId", "timestamp", "version",
+				new PersistenceManager(null), "numero",
+				"(SELECT COALESCE(MAX(numero),0) FROM Table WHERE site=?) + 1") {
 			@Override
 			public List<Map<String, Object>> list(Principal principal, Criteria<Map<String, Object>> criteria,
 					Integer limit, String... orderBy) {
@@ -70,46 +71,49 @@ public class GenericPersistentRepositoryTest {
 
 	@Test
 	public void list() {
-		repository.list(principal, null, null, "id");
+		repository.list(principal, null, null, "numero");
 		assertEquals(1, output.size());
-		assertEquals("SELECT *\nFROM Table\n--WHERE\nORDER BY id\n", output.get(0));
+		assertEquals("SELECT *\nFROM Table\n--WHERE\nORDER BY numero\n", output.get(0));
 	}
 
 	@Test
 	public void insert() {
 		Map<String, Object> item = new HashMap<>();
+		item.put("site", 1);
 		item.put("fieldA", "valueA");
 		repository.insert(item, principal);
 		assertEquals(2, output.size());
 		assertEquals(
-				"INSERT INTO Table (fieldA, id, userId, timestamp, version) VALUES (?, DEFAULT, ?, current_timestamp, 1) RETURNING id",
+				"INSERT INTO Table (site, fieldA, numero, userId, timestamp, version) VALUES (?, ?, (SELECT COALESCE(MAX(numero),0) FROM Table WHERE site=?) + 1, ?, current_timestamp, 1) RETURNING numero",
 				output.get(0));
-		assertEquals("[ \"valueA\", \"user@test.test\" ]", output.get(1));
+		assertEquals("[ 1, \"valueA\", 1, \"user@test.test\" ]", output.get(1));
 	}
 
 	@Test
 	public void update() throws RepositoryException {
 		Map<String, Object> item = new HashMap<>();
-		item.put("id", 42);
+		item.put("site", 1);
+		item.put("numero", 42);
 		item.put("fieldA", "valueA");
 		item.put("version", 1);
 		repository.update(item, principal);
 		assertEquals(2, output.size());
 		assertEquals(
-				"UPDATE Table SET fieldA=?, version=version+1, userId=?, timestamp=current_timestamp WHERE id=? AND version=?",
+				"UPDATE Table SET fieldA=?, version=version+1, userId=?, timestamp=current_timestamp WHERE site=? AND numero=? AND version=?",
 				output.get(0));
-		assertEquals("[ \"valueA\", \"user@test.test\", 42, 1 ]", output.get(1));
+		assertEquals("[ \"valueA\", \"user@test.test\", 1, 42, 1 ]", output.get(1));
 	}
 
 	@Test
 	public void delete() {
 		Map<String, Object> item = new HashMap<>();
-		item.put("id", 42);
+		item.put("site", 1);
+		item.put("numero", 42);
 		item.put("fieldA", "valueA");
 		repository.delete(item, principal);
 		assertEquals(2, output.size());
-		assertEquals("DELETE FROM Table WHERE id=?", output.get(0));
-		assertEquals("[ 42 ]", output.get(1));
+		assertEquals("DELETE FROM Table WHERE site=? AND numero=?", output.get(0));
+		assertEquals("[ 1, 42 ]", output.get(1));
 		output.clear();
 	}
 }
