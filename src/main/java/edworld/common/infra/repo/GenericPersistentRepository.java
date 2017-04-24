@@ -1,5 +1,7 @@
 package edworld.common.infra.repo;
 
+import static edworld.common.infra.util.RegexUtil.regexHTML;
+
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Map;
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 
+import edworld.common.infra.util.RegexUtil;
 import edworld.common.repo.Criteria;
 import edworld.common.repo.Repository;
 import edworld.common.repo.RepositoryException;
@@ -52,9 +55,11 @@ public class GenericPersistentRepository extends AbstractPersistentRepository
 		List<Object> parms = new ArrayList<>();
 		for (String field : getFieldNames(item)) {
 			fields += prefix + field;
-			if (field.equalsIgnoreCase(generatedPK))
+			if (field.equalsIgnoreCase(generatedPK)) {
 				values += prefix + generatedPKFormula;
-			else if (field.equalsIgnoreCase(userIdField)) {
+				for (String fieldName : RegexUtil.listOccurrences(regexHTML("(\\w+)\\s*=\\s*\\?"), generatedPKFormula))
+					parms.add(dsObject(item.get(fieldName)));
+			} else if (field.equalsIgnoreCase(userIdField)) {
 				values += prefix + "?";
 				parms.add(ds(principal.getName()));
 			} else if (field.equalsIgnoreCase(timestampField))

@@ -12,28 +12,28 @@ public abstract class RegexUtil {
 		return Pattern.compile(regexHTML.replace("...", "[^<>]*").replace("___", "[^'\"]*"));
 	}
 
-	public static String extrairConteudoHTML(String texto) {
-		return unescapeHtml4(regexHTML("<...>").matcher(texto).replaceAll("").replaceAll("\\s+", " ").trim());
+	public static String extractHTMLContents(String text) {
+		return unescapeHtml4(regexHTML("<...>").matcher(text).replaceAll("").replaceAll("\\s+", " ").trim());
 	}
 
-	public static String primeiraOcorrencia(Pattern regex, String texto) {
-		Matcher matcher = regex.matcher(texto);
+	public static String firstOccurrence(Pattern regex, String text) {
+		Matcher matcher = regex.matcher(text);
 		if (matcher.find())
 			return matcher.group(1).trim().replaceAll("\\s+", " ");
 		return null;
 	}
 
-	public static List<String> listarOcorrencias(Pattern regex, String texto) {
-		return listarOcorrencias(regex, texto, 1);
+	public static List<String> listOccurrences(Pattern regex, String text) {
+		return listOccurrences(regex, text, 1);
 	}
 
-	public static List<String> listarOcorrencias(Pattern regex, String texto, int indiceGrupo) {
+	public static List<String> listOccurrences(Pattern regex, String text, int groupIndex) {
 		List<String> result = new ArrayList<String>();
-		Matcher matcher = regex.matcher(texto);
+		Matcher matcher = regex.matcher(text);
 		while (matcher.find()) {
-			String ocorrencia = matcher.group(indiceGrupo).trim().replaceAll("\\s+", " ");
-			if (!result.contains(ocorrencia))
-				result.add(ocorrencia);
+			String occurrence = matcher.group(groupIndex).trim().replaceAll("\\s+", " ");
+			if (!result.contains(occurrence))
+				result.add(occurrence);
 		}
 		return result;
 	}

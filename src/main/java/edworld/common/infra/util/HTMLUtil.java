@@ -19,7 +19,7 @@ public class HTMLUtil {
 	private static final String TEMPLATE_CONTENT = "${content}";
 
 	public static List<String> extractLinksHTML(String html) {
-		return extractTrechosHTML(html, Pattern.compile("(?is)<a href=\"([^\"]*)\"[^>]*>.*?</a>"));
+		return extractSegmentsHTML(html, Pattern.compile("(?is)<a href=\"([^\"]*)\"[^>]*>.*?</a>"));
 	}
 
 	public static List<String> extractHeadingsHTML(String html) {
@@ -28,19 +28,19 @@ public class HTMLUtil {
 
 	public static List<String> extractHeadingsHTML(String html, Integer level) {
 		String levelRule = level == null ? "\\d+" : level.toString();
-		return extractTrechosHTML(html, Pattern.compile("(?is)<h" + levelRule + "[^>]*>(.*?)</h" + levelRule + ">"));
+		return extractSegmentsHTML(html, Pattern.compile("(?is)<h" + levelRule + "[^>]*>(.*?)</h" + levelRule + ">"));
 	}
 
 	public static List<String> extractTablesHTML(String html) {
-		return extractTrechosHTML(html, Pattern.compile("(?is)<table[^>]*>.*?</table>"), 0, "<table");
+		return extractSegmentsHTML(html, Pattern.compile("(?is)<table[^>]*>.*?</table>"), 0, "<table");
 	}
 
 	public static List<String> extractTableRowsHTML(String table) {
-		return extractTrechosHTML(table, Pattern.compile("(?is)<tr[^>]*>.*?</tr>"), 0, "<tr");
+		return extractSegmentsHTML(table, Pattern.compile("(?is)<tr[^>]*>.*?</tr>"), 0, "<tr");
 	}
 
 	public static List<String> extractTableCellsHTML(String tableRow) {
-		return extractTrechosHTML(tableRow, Pattern.compile("(?is)<t[dh][^>]*>.*?</t[dh]>"));
+		return extractSegmentsHTML(tableRow, Pattern.compile("(?is)<t[dh][^>]*>.*?</t[dh]>"));
 	}
 
 	public static String encodeURLParam(String parametro) {
@@ -51,25 +51,25 @@ public class HTMLUtil {
 		}
 	}
 
-	public static List<String> extractTrechosHTML(String html, Pattern regex) {
-		return extractTrechosHTML(html, regex, 0);
+	public static List<String> extractSegmentsHTML(String html, Pattern regex) {
+		return extractSegmentsHTML(html, regex, 0);
 	}
 
-	public static List<String> extractTrechosHTML(String html, Pattern regex, int groupIndex) {
-		return extractTrechosHTML(html, regex, groupIndex, null);
+	public static List<String> extractSegmentsHTML(String html, Pattern regex, int groupIndex) {
+		return extractSegmentsHTML(html, regex, groupIndex, null);
 	}
 
-	public static List<String> extractTrechosHTML(String html, Pattern regex, int groupIndex,
+	public static List<String> extractSegmentsHTML(String html, Pattern regex, int groupIndex,
 			String fromLastOcurrence) {
-		List<String> trechos = new ArrayList<String>();
+		List<String> segments = new ArrayList<String>();
 		Matcher matcher = regex.matcher(html);
 		while (matcher.find()) {
 			String item = matcher.group(groupIndex);
 			if (fromLastOcurrence != null)
 				item = item.substring(item.lastIndexOf(fromLastOcurrence));
-			trechos.add(item);
+			segments.add(item);
 		}
-		return trechos;
+		return segments;
 	}
 
 	public static String extractTabularFieldValue(String tabularFieldName, String html) {
