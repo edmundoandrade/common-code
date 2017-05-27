@@ -1,6 +1,7 @@
 package edworld.common.infra.util;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -165,6 +166,10 @@ public abstract class TextUtil {
 
 	public static Boolean chkBool(String parameter, Boolean valorDefault) {
 		return hasContent(parameter) ? Boolean.parseBoolean(parameter.trim()) : valorDefault;
+	}
+
+	public static Calendar chkCalendar(String parameter, DateFormat format) {
+		return hasContent(parameter) ? DateUtil.parseDateTime(parameter.trim(), format) : null;
 	}
 
 	public static boolean hasContent(String parameter) {
