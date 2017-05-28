@@ -142,6 +142,8 @@ public abstract class TextUtil {
 	}
 
 	public static Integer chkInt(String parameter) {
+		if (hasContent(parameter) && parameter.contains("."))
+			return Math.round(chkDbl(parameter).floatValue());
 		return hasContent(parameter) ? Integer.parseInt(parameter.trim()) : null;
 	}
 
