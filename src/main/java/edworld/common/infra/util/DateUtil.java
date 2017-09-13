@@ -161,6 +161,9 @@ public abstract class DateUtil {
 	public static Calendar parseStartDate(String range, DateFormat format) {
 		String start = extractStartDate(range);
 		String end = extractEndDate(range);
+		System.out.println("*** " + range);
+		System.out.println(start + " => " + extractStartDate(range));
+		System.out.println(end + " => " + extractEndDate(range));
 		int numberOfParts = start.split("/").length;
 		for (int i = 0; i < numberOfParts; i++)
 			end = end.replaceFirst(".*?/", "");
@@ -188,7 +191,7 @@ public abstract class DateUtil {
 
 	private static String extractStartDate(String range) {
 		return range.trim().toLowerCase().replaceAll("\\s+(a|até|e)\\s+.*", "").replace("º", "")
-				.replaceAll("\\s+de\\s+", "/");
+				.replaceAll("\\s+de\\s+", "/").replaceAll("\\s+", "/");
 	}
 
 	private static String extractEndDate(String range) {

@@ -25,6 +25,9 @@ public class DateUtilTest {
 		periodo = "31 DE MAIO A 3 JUNHO DE 2016";
 		assertEquals("31/05/2016", DateUtil.dateToString(DateUtil.parseStartDate(periodo)));
 		assertEquals("03/06/2016", DateUtil.dateToString(DateUtil.parseEndDate(periodo)));
+		periodo = "8 de dezembro 2017";
+		assertEquals("08/12/2017", DateUtil.dateToString(DateUtil.parseStartDate(periodo)));
+		assertEquals("08/12/2017", DateUtil.dateToString(DateUtil.parseEndDate(periodo)));
 	}
 
 	@Test
