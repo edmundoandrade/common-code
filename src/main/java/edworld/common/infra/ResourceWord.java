@@ -1,17 +1,19 @@
 package edworld.common.infra;
 
-import java.io.BufferedInputStream;
+import static org.apache.poi.poifs.filesystem.FileMagic.OOXML;
+import static org.apache.poi.poifs.filesystem.FileMagic.prepareToCheckMagic;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.hwpf.usermodel.Table;
 import org.apache.poi.hwpf.usermodel.TableCell;
+import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.xwpf.usermodel.IBodyElement;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -24,9 +26,9 @@ public class ResourceWord {
 
 	public ResourceWord(InputStream stream) {
 		try {
-			InputStream input = new BufferedInputStream(stream);
+			InputStream input = prepareToCheckMagic(stream);
 			try {
-				if (POIXMLDocument.hasOOXMLHeader(input))
+				if (FileMagic.valueOf(input) == OOXML)
 					loadDOCX(input);
 				else
 					loadDOC(input);

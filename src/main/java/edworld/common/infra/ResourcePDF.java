@@ -28,9 +28,9 @@ public class ResourcePDF {
 	private static final Color LINK_COLOR = Color.BLUE;
 	private static final Color TITLE_COLOR = Color.BLUE;
 	private static final Color TEXT_COLOR = Color.BLACK;
-	private static final int TITLE_FONT_SIZE = 12;
-	private static final int CONTINUATION_FONT_SIZE = 9;
-	private static final int FOOTER_FONT_SIZE = 9;
+	private static final float TITLE_FONT_SIZE = 12.0F;
+	private static final float CONTINUATION_FONT_SIZE = 9.0F;
+	private static final float FOOTER_FONT_SIZE = 9.0F;
 	private PDFont normalFont = PDType1Font.HELVETICA;
 	private PDFont boldFont = PDType1Font.HELVETICA_BOLD;
 	private String title;
@@ -43,6 +43,7 @@ public class ResourcePDF {
 	private String contact;
 	private URL logoURL;
 	private PDPage currentPage;
+	private PDFont currentFont;
 
 	public ResourcePDF(String title, String version, String contact, URL logoURL) {
 		this.title = title;
@@ -133,9 +134,9 @@ public class ResourcePDF {
 	public float showTextLine(float x, float y, String text, PDFont font, float fontSize, boolean truncate) {
 		try {
 			pageContent.beginText();
-			pageContent.setFont(font, fontSize);
+			setFont(font, fontSize);
 			pageContent.newLineAtOffset(x, y);
-			pageContent.showText(truncate ? truncate(text) : text);
+			showText(truncate ? truncate(text) : text);
 			pageContent.endText();
 			return textHeight(font, fontSize);
 		} catch (IOException e) {
@@ -179,11 +180,11 @@ public class ResourcePDF {
 		try {
 			pageContent.setNonStrokingColor(LINK_COLOR);
 			pageContent.beginText();
-			pageContent.setFont(normalFont, FOOTER_FONT_SIZE);
+			setFont(normalFont, FOOTER_FONT_SIZE);
 			pageContent.newLineAtOffset(40F, 30F);
-			pageContent.showText("Versão de " + version);
+			showText("Versão de " + version);
 			pageContent.newLineAtOffset(250F, 0F);
-			pageContent.showText(contact);
+			showText(contact);
 			pageContent.endText();
 		} catch (IOException e) {
 			throw new IllegalArgumentException(e);
@@ -259,5 +260,35 @@ public class ResourcePDF {
 		if (text.length() < 145)
 			return text;
 		return text.substring(0, 143) + "...";
+	}
+
+	protected void setFont(PDFont font, float fontSize) throws IOException {
+		pageContent.setFont(font, fontSize);
+		currentFont = font;
+	}
+
+	protected void showText(String text) throws IOException {
+		pageContent.showText(checkFontGlyphs(text, currentFont));
+	}
+
+	protected String checkFontGlyphs(String text, PDFont font) throws IOException {
+		if (hasValidFontGlyphs(text, font))
+			return text;
+		String result = "";
+		for (int i = 0; i < text.length(); i++)
+			if (hasValidFontGlyphs(result + text.charAt(i), font))
+				result += text.charAt(i);
+			else
+				result += " ";
+		return result;
+	}
+
+	protected boolean hasValidFontGlyphs(String text, PDFont font) throws IOException {
+		try {
+			font.encode(text);
+			return true;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 }
