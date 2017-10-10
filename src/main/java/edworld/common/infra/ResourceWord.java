@@ -41,8 +41,7 @@ public class ResourceWord {
 	}
 
 	private void loadDOCX(InputStream input) throws IOException {
-		XWPFDocument doc = new XWPFDocument(input);
-		try {
+		try (XWPFDocument doc = new XWPFDocument(input)) {
 			for (IBodyElement element : doc.getBodyElements())
 				if (element instanceof XWPFParagraph) {
 					XWPFParagraph par = ((XWPFParagraph) element);
@@ -61,39 +60,39 @@ public class ResourceWord {
 						}
 					}
 				}
-		} finally {
-			doc.close();
 		}
 	}
 
 	private void loadDOC(InputStream input) throws IOException {
-		HWPFDocument doc = new HWPFDocument(input);
-		Range range = doc.getRange();
-		boolean tableProcessed = false;
-		for (int i = 0; i < range.numParagraphs(); i++) {
-			Paragraph par = range.getParagraph(i);
-			if (!par.isInTable()) {
-				elements.add(new DocumentParagraph(par.text(), numeringFormat(par)));
-				tableProcessed = false;
-			} else if (!tableProcessed) {
-				DocumentTable table = new DocumentTable();
-				elements.add(table);
-				Table tbl = range.getTable(par);
-				for (int rowIdx = 0; rowIdx < tbl.numRows(); rowIdx++) {
-					TableRow currentRow = new TableRow();
-					table.addRow(currentRow);
-					org.apache.poi.hwpf.usermodel.TableRow row = tbl.getRow(rowIdx);
-					for (int colIdx = 0; colIdx < row.numCells(); colIdx++) {
-						edworld.common.infra.TableCell currentCell = new edworld.common.infra.TableCell();
-						TableCell cell = row.getCell(colIdx);
-						for (int parIdx = 0; parIdx < cell.numParagraphs(); parIdx++) {
-							Paragraph paragraph = cell.getParagraph(parIdx);
-							currentCell.addParagraph(new DocumentParagraph(text(paragraph), numeringFormat(paragraph)));
+		try (HWPFDocument doc = new HWPFDocument(input)) {
+			Range range = doc.getRange();
+			boolean tableProcessed = false;
+			for (int i = 0; i < range.numParagraphs(); i++) {
+				Paragraph par = range.getParagraph(i);
+				if (!par.isInTable()) {
+					elements.add(new DocumentParagraph(par.text(), numeringFormat(par)));
+					tableProcessed = false;
+				} else if (!tableProcessed) {
+					DocumentTable table = new DocumentTable();
+					elements.add(table);
+					Table tbl = range.getTable(par);
+					for (int rowIdx = 0; rowIdx < tbl.numRows(); rowIdx++) {
+						TableRow currentRow = new TableRow();
+						table.addRow(currentRow);
+						org.apache.poi.hwpf.usermodel.TableRow row = tbl.getRow(rowIdx);
+						for (int colIdx = 0; colIdx < row.numCells(); colIdx++) {
+							edworld.common.infra.TableCell currentCell = new edworld.common.infra.TableCell();
+							TableCell cell = row.getCell(colIdx);
+							for (int parIdx = 0; parIdx < cell.numParagraphs(); parIdx++) {
+								Paragraph paragraph = cell.getParagraph(parIdx);
+								currentCell.addParagraph(
+										new DocumentParagraph(text(paragraph), numeringFormat(paragraph)));
+							}
+							currentRow.addCell(currentCell);
 						}
-						currentRow.addCell(currentCell);
 					}
+					tableProcessed = true;
 				}
-				tableProcessed = true;
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package edworld.common.infra.util;
 
-import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
-import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
+import static org.apache.commons.text.StringEscapeUtils.escapeHtml4;
+import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;

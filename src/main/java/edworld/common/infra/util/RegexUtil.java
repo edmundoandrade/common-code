@@ -1,7 +1,5 @@
 package edworld.common.infra.util;
 
-import static org.apache.commons.lang3.StringEscapeUtils.unescapeHtml4;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,7 +11,7 @@ public abstract class RegexUtil {
 	}
 
 	public static String extractHTMLContents(String text) {
-		return unescapeHtml4(regexHTML("<...>").matcher(text).replaceAll("").replaceAll("\\s+", " ").trim());
+		return HTMLUtil.unescapeHTML(regexHTML("<...>").matcher(text).replaceAll("").replaceAll("\\s+", " ").trim());
 	}
 
 	public static String firstOccurrence(Pattern regex, String text) {
