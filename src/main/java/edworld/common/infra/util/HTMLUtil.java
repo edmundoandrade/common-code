@@ -6,6 +6,7 @@ import static org.apache.commons.text.StringEscapeUtils.unescapeHtml4;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import edworld.common.core.Link;
+import edworld.common.infra.Config;
 
 public class HTMLUtil {
 	public static final String LF = System.getProperty("line.separator");
@@ -43,9 +45,25 @@ public class HTMLUtil {
 		return extractSegmentsHTML(tableRow, Pattern.compile("(?is)<t[dh][^>]*>.*?</t[dh]>"));
 	}
 
-	public static String encodeURLParam(String parametro) {
+	public static String encodeURLParam(String parameter) {
+		return encodeURLParam(parameter, Config.getEncoding());
+	}
+
+	public static String encodeURLParam(String parameter, String encoding) {
 		try {
-			return URLEncoder.encode(parametro, "UTF-8");
+			return URLEncoder.encode(parameter, encoding);
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+
+	public static String decodeURLParam(String parameter) {
+		return decodeURLParam(parameter, Config.getEncoding());
+	}
+
+	public static String decodeURLParam(String parameter, String encoding) {
+		try {
+			return URLDecoder.decode(parameter, encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw new IllegalArgumentException(e);
 		}
